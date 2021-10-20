@@ -14,6 +14,8 @@ class Rebrander():
         'https://github.com/bitcoin-core': 'https://github.com/ComputationBenefactorCoin/xcbc',
         'https://github.com/bitcoin': 'https://github.com/ComputationBenefactorCoin',
         'https://web.libera.chat/#bitcoin': 'https://computationbenefactorcoin.com/',
+        'bitcoin.org': 'computationbenefactorcoin.com',
+        'bitcoincore.org': 'computationbenefactorcoin.com',
         'bitcoin': 'xcbc',
         'Bitcoin': 'XCBC',
         'BITCOIN': 'XCBC',
