@@ -1,4 +1,7 @@
-import argparse, os, re, sys
+import os
+from argparse import ArgumentParser
+from re import search as re_search, sub as re_sub
+from sys import exit as sys_exit
 
 class Rebrander():
     directory = ''
@@ -26,7 +29,7 @@ class Rebrander():
         self.directory = directory
 
     def check_dir_names(self):
-        for root, subdir_names, file_names in os.walk(self.directory, topdown=True):
+        for root, subdir_names, _file_names in os.walk(self.directory, topdown=True):
             subdir_names[:] = [d for d in subdir_names if d not in self.excluded_directories]
             for subdir_name in subdir_names:
                 self.check_name(subdir_name, root)
@@ -48,33 +51,33 @@ class Rebrander():
         new_content = []
         overwrite_file = False
         try:
-            with open(file_name, encoding='utf8') as f:
-                for line in f:
+            with open(file_name, encoding='utf8') as file:
+                for line in file:
                     new_line = self.check_line(line)
                     new_content.append(new_line)
                     if new_line != line:
                         overwrite_file = True
 
-            if overwrite_file == True:
+            if overwrite_file:
                 print('Overwriting', file_name)
-                f = open(file_name, 'w', encoding='utf8')
-                f.writelines(new_content)
-                f.close()
-        except:
+                file = open(file_name, 'w', encoding='utf8')
+                file.writelines(new_content)
+                file.close()
+        except UnicodeDecodeError:
             print('File content checking error', file_name)
 
     def check_line(self, line):
         new_line = line
         for rebrand_key, rebrand_value in self.rebrand_dictionary.items():
-            if re.search(rebrand_key, new_line) and not re.search('Copyright', new_line):
-                new_line = re.sub(rebrand_key, rebrand_value, new_line)
+            if re_search(rebrand_key, new_line) and not re_search('Copyright', new_line):
+                new_line = re_sub(rebrand_key, rebrand_value, new_line)
 
         return new_line
 
     def check_name(self, name, root):
         for rebrand_key, rebrand_value in self.rebrand_dictionary.items():
-            if re.search(rebrand_key, name):
-                new_name = re.sub(rebrand_key, rebrand_value, name)
+            if re_search(rebrand_key, name):
+                new_name = re_sub(rebrand_key, rebrand_value, name)
                 old_file = root + '/' + name
                 new_file = root + '/' + new_name
                 print('Renaming', old_file, new_file)
@@ -85,14 +88,14 @@ class Rebrander():
 
         if not os.path.isdir(self.directory):
             print(self.directory, 'is not a directory')
-            sys.exit()
+            sys_exit()
 
         self.check_dir_names()
         self.check_file_names()
         self.check_files_content()
 
 if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
+    parser = ArgumentParser()
     parser.add_argument('--directory', help='directory to rebrand')
     args = parser.parse_args()
 
