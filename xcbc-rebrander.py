@@ -1,4 +1,4 @@
-import argparse, os, re
+import argparse, os, re, sys
 
 class Rebrander():
     directory = ''
@@ -56,17 +56,17 @@ class Rebrander():
                         overwrite_file = True
 
             if overwrite_file == True:
-                print("Overwriting", file_name)
+                print('Overwriting', file_name)
                 f = open(file_name, 'w', encoding='utf8')
                 f.writelines(new_content)
                 f.close()
         except:
-            print("File content checking error", file_name)
+            print('File content checking error', file_name)
 
     def check_line(self, line):
         new_line = line
         for rebrand_key, rebrand_value in self.rebrand_dictionary.items():
-            if re.search(rebrand_key, new_line) and not re.search("Copyright", new_line):
+            if re.search(rebrand_key, new_line) and not re.search('Copyright', new_line):
                 new_line = re.sub(rebrand_key, rebrand_value, new_line)
 
         return new_line
@@ -77,16 +77,21 @@ class Rebrander():
                 new_name = re.sub(rebrand_key, rebrand_value, name)
                 old_file = root + '/' + name
                 new_file = root + '/' + new_name
-                print("Renaming", old_file, new_file)
+                print('Renaming', old_file, new_file)
                 os.rename(old_file, new_file)
 
     def run(self):
-        print("Rebrander", self.directory, "dictionary", self.rebrand_dictionary)
+        print('Rebrander', self.directory, 'dictionary', self.rebrand_dictionary)
+
+        if not os.path.isdir(self.directory):
+            print(self.directory, 'is not a directory')
+            sys.exit()
+
         self.check_dir_names()
         self.check_file_names()
         self.check_files_content()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--directory', help='directory to rebrand')
     args = parser.parse_args()
