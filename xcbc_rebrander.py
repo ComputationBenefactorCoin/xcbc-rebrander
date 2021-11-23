@@ -29,6 +29,7 @@ class Rebrander():
         'Bitcoin': 'XCBC',
         'BITCOIN': 'XCBC',
         'BTC': 'XCBC',
+#        '8332': '8082',
     }
 
     def __init__(self, directory):
@@ -125,6 +126,10 @@ if __name__ == '__main__':
     parser = ArgumentParser()
     parser.add_argument('--directory', help='directory to rebrand')
     args = parser.parse_args()
+
+    if not args.directory:
+        print('Directory not specified')
+        sys_exit()
 
     rebrander = Rebrander(args.directory)
     rebrander.run()
